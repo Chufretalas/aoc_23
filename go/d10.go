@@ -5,88 +5,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	u "github.com/Chufretalas/aoc_23/utils"
 )
-
-type Direction int
-
-const (
-	UP Direction = iota
-	DOWN
-	LEFT
-	RIGHT
-)
-
-type Coord2D struct {
-	L int
-	C int
-}
-
-func (c *Coord2D) Set(line, col int) {
-	c.L = line
-	c.C = col
-}
-
-func (c Coord2D) Next(d Direction) Coord2D {
-	switch d {
-	case UP:
-		return Coord2D{c.L - 1, c.C}
-	case DOWN:
-		return Coord2D{c.L + 1, c.C}
-	case LEFT:
-		return Coord2D{c.L, c.C - 1}
-	case RIGHT:
-		return Coord2D{c.L, c.C + 1}
-	}
-	panic("??????????")
-}
-
-func (c *Coord2D) Move(d Direction) {
-	switch d {
-	case UP:
-		c.L--
-	case DOWN:
-		c.L++
-	case LEFT:
-		c.C--
-	case RIGHT:
-		c.C++
-	}
-}
-
-type Matrix2D [][]string
-
-func (m Matrix2D) Get(c Coord2D) string {
-	if c.C < 0 || c.C >= len(m[0]) || c.L < 0 || c.L >= len(m) {
-		return ""
-	}
-	return m[c.L][c.C]
-}
-
-func (m Matrix2D) Set(c Coord2D, s string) {
-	if c.C < 0 || c.C >= len(m[0]) || c.L < 0 || c.L >= len(m) {
-		return
-	}
-	m[c.L][c.C] = s
-}
-
-func (m Matrix2D) Copy() Matrix2D {
-	c := make(Matrix2D, len(m))
-	for i := range m {
-		c[i] = m[i][0:len(m[i])]
-	}
-	return c
-}
-
-func (m Matrix2D) String() string {
-	final := ""
-	for _, line := range m {
-		for _, s := range line {
-			final += fmt.Sprintf("%v", s)
-		}
-		final += "\n"
-	}
-	return final
-}
 
 func D10P1() {
 	f, _ := os.Open("./inputs/d10.txt")
@@ -94,9 +15,9 @@ func D10P1() {
 
 	scan := bufio.NewScanner(f)
 
-	m := Matrix2D{}
-	start := Coord2D{-1, -1}
-	current := Coord2D{-1, -1}
+	m := u.Matrix2D{}
+	start := u.Coord2D{L: -1, C: -1}
+	current := u.Coord2D{L: -1, C: -1}
 	for scan.Scan() {
 		m = append(m, strings.Split(scan.Text(), ""))
 	}
@@ -116,7 +37,7 @@ func D10P1() {
 	}
 
 	// finding the loop
-	guesses := []Direction{UP, DOWN, LEFT, RIGHT}
+	guesses := []u.Direction{u.UP, u.DOWN, u.LEFT, u.RIGHT}
 	for _, dir := range guesses {
 		steps := 0
 		failed := false
@@ -134,50 +55,50 @@ func D10P1() {
 				os.Exit(0)
 			}
 			switch dir {
-			case UP:
+			case u.UP:
 				switch next {
 				case "|":
-					dir = UP
+					dir = u.UP
 				case "F":
-					dir = RIGHT
+					dir = u.RIGHT
 				case "7":
-					dir = LEFT
+					dir = u.LEFT
 				default:
 					current = start
 					failed = true
 				}
-			case DOWN:
+			case u.DOWN:
 				switch next {
 				case "|":
-					dir = DOWN
+					dir = u.DOWN
 				case "L":
-					dir = RIGHT
+					dir = u.RIGHT
 				case "J":
-					dir = LEFT
+					dir = u.LEFT
 				default:
 					current = start
 					failed = true
 				}
-			case LEFT:
+			case u.LEFT:
 				switch next {
 				case "-":
-					dir = LEFT
+					dir = u.LEFT
 				case "L":
-					dir = UP
+					dir = u.UP
 				case "F":
-					dir = DOWN
+					dir = u.DOWN
 				default:
 					current = start
 					failed = true
 				}
-			case RIGHT:
+			case u.RIGHT:
 				switch next {
 				case "-":
-					dir = RIGHT
+					dir = u.RIGHT
 				case "7":
-					dir = DOWN
+					dir = u.DOWN
 				case "J":
-					dir = UP
+					dir = u.UP
 				default:
 					current = start
 					failed = true
@@ -199,9 +120,9 @@ func D10P2() {
 
 	scan := bufio.NewScanner(f)
 
-	m := Matrix2D{}
-	start := Coord2D{-1, -1}
-	current := Coord2D{-1, -1}
+	m := u.Matrix2D{}
+	start := u.Coord2D{L: -1, C: -1}
+	current := u.Coord2D{L: -1, C: -1}
 	for scan.Scan() {
 		m = append(m, strings.Split(scan.Text(), ""))
 	}
@@ -220,15 +141,15 @@ func D10P2() {
 		}
 	}
 
-	var painted Matrix2D
+	var painted u.Matrix2D
 
 	// finding the loop
-	guesses := []Direction{UP, DOWN, LEFT, RIGHT}
+	guesses := []u.Direction{u.UP, u.DOWN, u.LEFT, u.RIGHT}
 	foundLoop := false
 	for _, dir := range guesses {
 		steps := 0
 		failed := false
-		painted = make(Matrix2D, len(m))
+		painted = make(u.Matrix2D, len(m))
 		for i := range m {
 			painted[i] = make([]string, len(m[i]))
 			copy(painted[i], m[i])
@@ -247,50 +168,50 @@ func D10P2() {
 				break
 			}
 			switch dir {
-			case UP:
+			case u.UP:
 				switch next {
 				case "|":
-					dir = UP
+					dir = u.UP
 				case "F":
-					dir = RIGHT
+					dir = u.RIGHT
 				case "7":
-					dir = LEFT
+					dir = u.LEFT
 				default:
 					current = start
 					failed = true
 				}
-			case DOWN:
+			case u.DOWN:
 				switch next {
 				case "|":
-					dir = DOWN
+					dir = u.DOWN
 				case "L":
-					dir = RIGHT
+					dir = u.RIGHT
 				case "J":
-					dir = LEFT
+					dir = u.LEFT
 				default:
 					current = start
 					failed = true
 				}
-			case LEFT:
+			case u.LEFT:
 				switch next {
 				case "-":
-					dir = LEFT
+					dir = u.LEFT
 				case "L":
-					dir = UP
+					dir = u.UP
 				case "F":
-					dir = DOWN
+					dir = u.DOWN
 				default:
 					current = start
 					failed = true
 				}
-			case RIGHT:
+			case u.RIGHT:
 				switch next {
 				case "-":
-					dir = RIGHT
+					dir = u.RIGHT
 				case "7":
-					dir = DOWN
+					dir = u.DOWN
 				case "J":
-					dir = UP
+					dir = u.UP
 				default:
 					current = start
 					failed = true
@@ -355,8 +276,8 @@ func D10P2() {
 				if current != "🔴" {
 					continue
 				}
-				coord := Coord2D{l, c}
-				nexts := []Coord2D{coord.Next(UP), coord.Next(DOWN), coord.Next(LEFT), coord.Next(RIGHT)}
+				coord := u.Coord2D{L: l, C: c}
+				nexts := []u.Coord2D{coord.Next(u.UP), coord.Next(u.DOWN), coord.Next(u.LEFT), coord.Next(u.RIGHT)}
 				for _, next := range nexts {
 					s := painted.Get(next)
 					if s == "" {
@@ -377,7 +298,7 @@ func D10P2() {
 	for l, line := range painted {
 		for c, s := range line {
 			if s != "🔵" && s != "🔴" {
-				painted.Set(Coord2D{l, c}, "🟡")
+				painted.Set(u.Coord2D{L: l, C: c}, "🟡")
 				enclosed++
 			}
 		}
