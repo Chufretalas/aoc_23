@@ -7,6 +7,6 @@ import (
 
 func main() {
 	start := time.Now().UnixMicro()
-	D13P2()
+	D14P2()
 	fmt.Printf("Exec time: %d us\n", time.Now().UnixMicro()-start)
 }
